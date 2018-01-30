@@ -13,8 +13,8 @@ class Step extends Component {
     this.lines = this.container.selectAll('path')
       .data(this.props.links).enter().append('path')
       .attr('fill', 'none')
-      .attr('stroke-width', 2)
-      .attr('stroke', d => d3.interpolateRainbow(d.story / 341)) // 341 is number of stories
+      .attr('stroke-width', 4)
+      .attr('stroke', d => d.color)
       .attr('opacity', 0.25)
       .attr('d', d => {
         const x1 = d.source.fx;

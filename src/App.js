@@ -54,6 +54,17 @@ class App extends Component {
               variant,
             }
           }).groupBy('variant').value();
+        // this is all just to assign some meaningless color to the links...
+        _.each(variants, links => {
+          const numStories = _.chain(links).groupBy('story').size().value();
+          _.chain(links).groupBy('story')
+            .sortBy(links => links[0].story)
+            .each((links, i) => {
+              _.each(links, link => {
+                link.color = d3.interpolateRainbow(i / numStories);
+              })
+            }).value();
+        });
 
         this.setState({nodes, variants});
       });
