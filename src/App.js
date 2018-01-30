@@ -48,8 +48,8 @@ class App extends Component {
             const story = parseInt(link.Variant.replace('s', ''));
             const variant = _.find(stories, s => +s.story_num === story).variant_group;
             return {
-              source: +link.Source,
-              target: +link.Target,
+              source: _.find(nodes, node => node.id === +link.Source),
+              target: _.find(nodes, node => node.id === +link.Target),
               story,
               variant,
             }
