@@ -1,0 +1,38 @@
+Vision
+Let's imagine this as a Pudding scrollytelling for now and assume a vertical orientation.
+I've dropped any ambitions of coordinating a viz with a film.
+
+The goal of the project is to show the nature of Cinderella story elements (topics) and story versions (unique tellings of the tale), along the way revealing some of the more fascinating details about it all.
+
+Viz
+One  viz can drive the entire story. Its build should be sequenced over the course of the reading, which will narrate its assembly.
+The data needed s/b attached.
+
+The viz is a node-link diagram.
+Nodes are story elements (38 total).
+Node y position is driven by the story element's average place of occurrence in the tale, from beginning (top) to end (bottom).
+Node diameter ~ # of versions that contain that particular element.
+Node x position: larger diameters are near the center. X & Y positions will have to be massaged.
+
+Edge between two nodes is two sequenced topics
+Edge thickness ~ more stories with that sequential pair
+Edge direction does not matter at this summary level (undirected)
+
+If all that makes sense then something like the following might result:
+Inline image 1Interaction
+I see three possible windows to play with:
+A. the node-link viz, described above
+B. a tiny square waffle chart, one cell for each of the 341 versions, in numbered order
+C. a text box inside which you can read the story version (maybe a modal that obscures B only?)
+Example interactions
+
+(A) Select an element node: (A) all branching paths from it are highlighted + (B) highlights all version boxes that include that element
+(A) Select edge: (A) all branching paths from it are highlighted + (B) highlights all version boxes that include that edge
+(B) Select version square: (A) single thread of that story is higlighted + (C) text of that version of the story appears
+Narrative
+Re-intro Cinderella by the ~5 main story elements via Disney version GIFs.
+Place GIFs over nodes.
+Intro Disney version as Perrault version, add the rest of the nodes and connect them.
+Intro Grimm version, note how it is different and similar.
+Where these topic elements come from: data origins.
+Keep adding more versions, maybe taking the time to highlight some other interesting versions, patterns, or elements of the tale (there is more to talk about than we have time for!)
