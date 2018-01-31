@@ -10,6 +10,8 @@ class Step extends Component {
   componentDidMount() {
     this.container = d3.select(this.refs.container);
 
+    const nodes = {};
+
     this.lines = this.container.selectAll('path')
       .data(this.props.links).enter().append('path')
       .attr('fill', 'none')
@@ -17,6 +19,9 @@ class Step extends Component {
       .attr('stroke', d => d.color)
       .attr('opacity', 0.25)
       .attr('d', d => {
+        nodes[d.source.id] = d.source;
+        nodes[d.target.id] = d.target;
+
         const x1 = d.source.fx;
         const y1 = d.source.fy;
         const x2 = d.target.fx;
@@ -27,8 +32,10 @@ class Step extends Component {
       });
 
     this.circles = this.container.selectAll('g')
-      .data(this.props.nodes).enter().append('g')
-      .attr('transform', d => `translate(${d.fx}, ${d.fy})`);
+      .data(_.values(nodes)).enter().append('g')
+      .style('cursor', 'pointer')
+      .attr('transform', d => `translate(${d.fx}, ${d.fy})`)
+      .on('click', this.clickNode);
     this.circles.append('circle')
       .attr('r', 12)
       .attr('fill', '#fff')
@@ -40,7 +47,27 @@ class Step extends Component {
     this.circles.append('text')
       .attr('dy', '.35em')
       .attr('x', 14)
+      .style('pointer-events', 'none')
       .text(d => d.label);
+  }
+
+  clickNode = (node) => {
+    const otherNodes = {}; // nodes on the other side
+    this.lines.attr('opacity', d => {
+      if (d.source.id === node.id) {
+        otherNodes[d.target.id] = 1;
+        return 0.5;
+      }
+      if (d.target.id === node.id) {
+        otherNodes[d.source.id] = 1;
+        return 0.5;
+      }
+      return 0.01;
+    });
+    this.circles.select('circle')
+      .attr('stroke-opacity', d => d.id === node.id || otherNodes[d.id] ? 1 : 0.01);
+    this.circles.selectAll('text')
+      .attr('opacity', d => d.id === node.id || otherNodes[d.id] ? 1 : 0.01);
   }
 
   render() {
