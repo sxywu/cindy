@@ -27,7 +27,7 @@ class App extends Component {
         const nodes = _.chain(elementNodes)
           .map(node => {
             let percent = _.find(elementPercentages, p =>
-              p.element_name.toLowerCase() == node.Label.toLowerCase());
+              p.element_name.toLowerCase() === node.Label.toLowerCase());
             return {
               id: +node.Node,
               label: node.Label,
@@ -45,7 +45,7 @@ class App extends Component {
           }).value();
         const variants = _.chain(edgeAllDirected)
           .map(link => {
-            const story = parseInt(link.Variant.replace('s', ''));
+            const story = parseInt(link.Variant.replace('s', ''), 10);
             const variant = _.find(stories, s => +s.story_num === story).variant_group;
             return {
               source: _.find(nodes, node => node.id === +link.Source),
