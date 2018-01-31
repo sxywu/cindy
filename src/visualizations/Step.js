@@ -40,16 +40,12 @@ class Step extends Component {
       .attr('transform', d => `translate(${d.fx}, ${d.fy})`)
       .on('click', (node) => this.setState({selectedNode: node, selectedLink: null}));
     this.circles.append('circle')
-      .attr('r', 12)
-      .attr('fill', '#fff')
+      .attr('r', 3)
+      .attr('fill', '#000')
       .attr('stroke', '#000');
     this.circles.append('text')
-      .attr('text-anchor', 'middle')
       .attr('dy', '.35em')
-      .text(d => d.id);
-    this.circles.append('text')
-      .attr('dy', '.35em')
-      .attr('x', 14)
+      .attr('x', 5)
       .style('pointer-events', 'none')
       .text(d => d.label);
   }
@@ -73,12 +69,9 @@ class Step extends Component {
         otherNodes[d.source.id] = 1;
         return 0.5;
       }
-      return 0.01;
+      return 0.005;
     });
-    this.circles.select('circle')
-      .attr('stroke-opacity', d => d.id === node.id || otherNodes[d.id] ? 1 : 0.01);
-    this.circles.selectAll('text')
-      .attr('opacity', d => d.id === node.id || otherNodes[d.id] ? 1 : 0.01);
+    this.circles.attr('opacity', d => d.id === node.id || otherNodes[d.id] ? 1 : 0.01);
   }
 
   clickLink = (link) => {
@@ -89,12 +82,9 @@ class Step extends Component {
         nodes[d.target.id] = 1;
         return 0.5;
       }
-      return 0.01;
+      return 0.005;
     });
-    this.circles.select('circle')
-      .attr('stroke-opacity', d => nodes[d.id] ? 1 : 0.01);
-    this.circles.selectAll('text')
-      .attr('opacity', d => nodes[d.id] ? 1 : 0.01);
+    this.circles.attr('opacity', d => nodes[d.id] ? 1 : 0.01);
   }
 
   render() {
