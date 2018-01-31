@@ -4,14 +4,14 @@ import _ from 'lodash';
 
 import Step from './visualizations/Step';
 
-const width = 1200;
+const width = 600;
 const height = 1200;
 
 class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {nodes: [], variants: []};
+    this.state = {nodes: [], variants: [], stories: {}};
   }
 
   componentWillMount() {
@@ -24,6 +24,9 @@ class App extends Component {
       .defer(d3.csv, `${process.env.PUBLIC_URL}/data/stories.csv`)
       .await((err, edgeAllDirected, edgeSummaryDirected, edgeSummaryUndirected,
         elementNodes, elementPercentages, stories) => {
+
+        stories = _.keyBy(stories, s => +s.story_num);
+
         const nodes = _.chain(elementNodes)
           .map(node => {
             let percent = _.find(elementPercentages, p =>
@@ -40,13 +43,13 @@ class App extends Component {
               // fx: (i / elementNodes.length) * width * 0.8,
               fx: width / 2,
               // fx: width * node.std * 0.8 + (height * 0.1),
-              fy: (i / elementNodes.length) * height * 0.8,
+              fy: (i / elementNodes.length) * height,
             })
           }).value();
         const variants = _.chain(edgeAllDirected)
           .map(link => {
             const story = parseInt(link.Variant.replace('s', ''), 10);
-            const variant = _.find(stories, s => +s.story_num === story).variant_group;
+            const variant = stories[story].variant_group;
             return {
               source: _.find(nodes, node => node.id === +link.Source),
               target: _.find(nodes, node => node.id === +link.Target),
@@ -66,7 +69,7 @@ class App extends Component {
             }).value();
         });
 
-        this.setState({nodes, variants});
+        this.setState({nodes, variants, stories});
       });
   }
 
@@ -74,7 +77,13 @@ class App extends Component {
     let steps = null;
     if (this.state.nodes.length) {
       steps = _.map(this.state.variants, (links, variant) => {
-        return (<Step nodes={this.state.nodes} links={links} variant={variant} />);
+        const props = {
+          nodes: this.state.nodes,
+          links, variant,
+          stories: this.state.stories,
+          width, height,
+        }
+        return (<Step {...props} />);
       });
     }
 

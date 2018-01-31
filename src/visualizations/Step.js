@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import _ from 'lodash';
 
-const width = 900;
-const height = 900;
-
 class Step extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {selectedNode: null, selectedLink: null};
+  }
 
   componentDidMount() {
     this.container = d3.select(this.refs.container);
@@ -30,13 +32,13 @@ class Step extends Component {
         const dist = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         return `M${x1},${y1} A${dist/8},${dist/8} 0 1 1 ${x2},${y2}`;
       }).style('cursor', 'pointer')
-      .on('click', this.clickLink);
+      .on('click', (link) => this.setState({selectedNode: null, selectedLink: link}));
 
     this.circles = this.container.selectAll('g')
       .data(_.values(nodes)).enter().append('g')
       .style('cursor', 'pointer')
       .attr('transform', d => `translate(${d.fx}, ${d.fy})`)
-      .on('click', this.clickNode);
+      .on('click', (node) => this.setState({selectedNode: node, selectedLink: null}));
     this.circles.append('circle')
       .attr('r', 12)
       .attr('fill', '#fff')
@@ -50,6 +52,14 @@ class Step extends Component {
       .attr('x', 14)
       .style('pointer-events', 'none')
       .text(d => d.label);
+  }
+
+  componentDidUpdate() {
+    if (this.state.selectedNode) {
+      this.clickNode(this.state.selectedNode);
+    } else if (this.state.selectedLink) {
+      this.clickLink(this.state.selectedLink);
+    }
   }
 
   clickNode = (node) => {
@@ -91,8 +101,14 @@ class Step extends Component {
     const style = {padding: 80};
     return (
       <div style={style}>
-        <h1>{this.props.variant}:</h1>
-        <svg ref='container' style={{overflow: 'visible'}} width={width} height={height} />
+        <svg ref='container' style={{overflow: 'visible', display: 'inline-block'}}
+          width={this.props.width} height={this.props.height} />
+        <span style={{verticalAlign: 'top', display: 'inline-block',
+          width: window.innerWidth - this.props.width - 200, lineHeight: 1.6}}>
+          <h1>{this.props.variant}</h1>
+          {this.state.selectedLink ?
+            this.props.stories[this.state.selectedLink.story].abstract : ''}
+        </span>
       </div>
     );
   }
