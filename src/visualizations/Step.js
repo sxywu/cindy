@@ -10,7 +10,7 @@ class Step extends Component {
   componentDidMount() {
     this.container = d3.select(this.refs.container);
 
-    const nodes = {};
+    const nodes = {}; // only keep the nodes that have links
 
     this.lines = this.container.selectAll('path')
       .data(this.props.links).enter().append('path')
@@ -29,7 +29,8 @@ class Step extends Component {
 
         const dist = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         return `M${x1},${y1} A${dist/8},${dist/8} 0 1 1 ${x2},${y2}`;
-      });
+      }).style('cursor', 'pointer')
+      .on('click', this.clickLink);
 
     this.circles = this.container.selectAll('g')
       .data(_.values(nodes)).enter().append('g')
@@ -68,6 +69,22 @@ class Step extends Component {
       .attr('stroke-opacity', d => d.id === node.id || otherNodes[d.id] ? 1 : 0.01);
     this.circles.selectAll('text')
       .attr('opacity', d => d.id === node.id || otherNodes[d.id] ? 1 : 0.01);
+  }
+
+  clickLink = (link) => {
+    const nodes = {};
+    this.lines.attr('opacity', d => {
+      if (d.story === link.story) {
+        nodes[d.source.id] = 1;
+        nodes[d.target.id] = 1;
+        return 0.5;
+      }
+      return 0.01;
+    });
+    this.circles.select('circle')
+      .attr('stroke-opacity', d => nodes[d.id] ? 1 : 0.01);
+    this.circles.selectAll('text')
+      .attr('opacity', d => nodes[d.id] ? 1 : 0.01);
   }
 
   render() {
